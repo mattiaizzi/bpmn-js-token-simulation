@@ -4,13 +4,13 @@ import BpmnViewer from 'bpmn-js/lib/NavigatedViewer';
 
 import fileDrop from 'file-drops';
 
-import exampleXML from '../resources/example.bpmn';
+import exampleXML from '../resources/diagram.bpmn';
 
 
 const url = new URL(window.location.href);
 
 const persistent = url.searchParams.has('p');
-const active = url.searchParams.has('e');
+const active = true;
 
 const initialDiagram = (() => {
   try {
@@ -83,8 +83,6 @@ viewer.openDiagram = function(diagram) {
       if (persistent) {
         localStorage['diagram-xml'] = diagram;
       }
-
-      this.get('canvas').zoom('fit-viewport');
     })
     .catch(err => {
       console.error(err);
@@ -103,3 +101,38 @@ document.body.addEventListener('dragover', fileDrop('Open BPMN diagram', functio
 }), false);
 
 viewer.openDiagram(initialDiagram);
+
+document.getElementById('start-button').onclick = () => {
+  document.getElementById('play-this').click();
+}
+
+document.getElementById('canvas').hidden = true;
+
+document.getElementById('file-upload').onchange = function (evt) {
+  var tgt = evt.target;
+  var files = tgt.files;
+
+  var reader = new FileReader();
+
+    reader.onload = function(evt) {
+        if(evt.target.readyState != 2) return;
+        
+        if(evt.target.error) {
+            alert('Error while reading file');
+            return;
+        }
+
+        viewer.openDiagram(evt.target.result)
+    };
+
+    const name = document.getElementById('filename')
+    if (files.length === 0) {
+      name.innerText = 'No file selected'
+    } else {
+      name.innerText = files[0].name
+    }
+
+    reader.readAsText(files[0]);
+
+
+}
