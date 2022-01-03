@@ -24,6 +24,9 @@ module.exports = (env, argv) => {
         }
       ]
     },
+    devServer: { 
+      openPage: 'viewer.html' 
+    },
     plugins: [
       new CopyWebpackPlugin({
         patterns: [

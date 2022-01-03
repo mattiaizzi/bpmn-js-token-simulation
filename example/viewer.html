@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
 
@@ -7,23 +8,57 @@
   <link rel="stylesheet" href="./dist/vendor/bpmn-js/assets/diagram-js.css" />
   <link rel="stylesheet" href="./dist/vendor/bpmn-js/assets/bpmn-font/css/bpmn-embedded.css" />
   <link rel="stylesheet" href="./dist/vendor/bpmn-js-token-simulation/assets/css/bpmn-js-token-simulation.css" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="./style.css" />
 
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
   <link rel="icon" type="image/png" href="favicon.png">
 
   <title>Viewer Demo - bpmn-js-token-simulation</title>
 </head>
+
 <body>
+  <h1 class="title-h1">BPMN TOKEN SIMULATION</h1>
   <div id="canvas"></div>
 
-  <div class="drop-message"><strong>Hint:</strong> Drop your own BPMN file to simulate it.</div>
 
-  <div class="links">
-    <a href="https://github.com/bpmn-io/bpmn-js-token-simulation" class="link" target="_blank" rel="noopener">View on GitHub</a>
-
-    <a href="./modeler.html" class="link">Modeler <i class="fa fa-sign-out"></i></a>
+  <div class="wrapper">
+    <div class="field">
+      <label class="subtitle-label"> Select a file:</label>
+      <div class="file has-name">
+        <label class="file-label">
+          <input id="file-upload" class="file-input" type="file" name="resume">
+          <span class="file-cta file-back">
+            <span class="file-icon">
+              <i class="fas fa-upload"></i>
+            </span>
+            <span class="file-label">
+              Choose a file…
+            </span>
+          </span>
+          <span class="file-name" id="filename">
+          </span>
+        </label>
+      </div>
+    </div>
+    <div>
+      <label class="subtitle-label"> Press to start simulation:</label>
+      <div class="field">
+        <div class="buttons">
+          <button class="button is-primary button-size" id="start-button"><i class="fa fa-play"
+              aria-hidden="true"></i></button>
+        </div>
+      </div>
+    </div>
   </div>
+
+
+
+  <script src="https://static.robotwebtools.org/EventEmitter2/current/eventemitter2.min.js"></script>
+  <script src="https://static.robotwebtools.org/roslibjs/current/roslib.js"></script>
 
   <script src="./dist/viewer.js"></script>
 </body>
+
 </html>
