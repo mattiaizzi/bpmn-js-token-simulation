@@ -2,23 +2,14 @@ import TokenSimulationModule from '../../lib/viewer';
 
 import BpmnViewer from 'bpmn-js/lib/NavigatedViewer';
 
-import fileDrop from 'file-drops';
-
-import exampleXML from '../resources/example.bpmn';
+import toastr from 'toastr';
 
 
 const url = new URL(window.location.href);
+let diagramLoaded = false;
 
 const persistent = url.searchParams.has('p');
 const active = true;
-
-const initialDiagram = (() => {
-  try {
-    return persistent && localStorage['diagram-xml'] || exampleXML;
-  } catch (err) {
-    return exampleXML;
-  }
-})();
 
 function hideDropMessage() {
   const dropMessage = document.querySelector('.drop-message');
@@ -32,10 +23,10 @@ if (persistent) {
 
 const ExampleModule = {
   __init__: [
-    [ 'eventBus', 'bpmnjs', 'toggleMode', function(eventBus, bpmnjs, toggleMode) {
+    ['eventBus', 'bpmnjs', 'toggleMode', function (eventBus, bpmnjs, toggleMode) {
 
       if (persistent) {
-        eventBus.on('commandStack.changed', function() {
+        eventBus.on('commandStack.changed', function () {
           bpmnjs.saveXML().then(result => {
             localStorage['diagram-xml'] = result.xml;
           });
@@ -58,7 +49,7 @@ const ExampleModule = {
       eventBus.on('diagram.init', 500, () => {
         toggleMode.toggleMode(active);
       });
-    } ]
+    }]
   ]
 };
 
@@ -73,7 +64,7 @@ const viewer = new BpmnViewer({
   }
 });
 
-viewer.openDiagram = function(diagram) {
+viewer.openDiagram = function (diagram) {
   return this.importXML(diagram)
     .then(({ warnings }) => {
       if (warnings.length) {
@@ -89,21 +80,12 @@ viewer.openDiagram = function(diagram) {
     });
 };
 
-document.body.addEventListener('dragover', fileDrop('Open BPMN diagram', function(files) {
-
-  // files = [ { name, contents }, ... ]
-
-  if (files.length) {
-    hideDropMessage();
-    viewer.openDiagram(files[0].contents);
-  }
-
-}), false);
-
-viewer.openDiagram(initialDiagram);
-
 document.getElementById('start-button').onclick = () => {
-  document.getElementById('play-this').click();
+    if(diagramLoaded) {
+      document.getElementById('play-this').click();
+    } else {
+      toastr.info("Nessun diagramma caricato");
+    }
 }
 
 document.getElementById('canvas').hidden = true;
@@ -114,24 +96,26 @@ document.getElementById('file-upload').onchange = function (evt) {
 
   var reader = new FileReader();
 
-    reader.onload = function(evt) {
-        if(evt.target.readyState != 2) return;
-        
-        if(evt.target.error) {
-            alert('Error while reading file');
-            return;
-        }
+  reader.onload = function (evt) {
+    if (evt.target.readyState != 2) return;
 
-        viewer.openDiagram(evt.target.result)
-    };
-
-    const name = document.getElementById('filename')
-    if (files.length === 0) {
-      name.innerText = 'No file selected'
-    } else {
-      name.innerText = files[0].name
+    if (evt.target.error) {
+      alert('Error while reading file');
+      return;
     }
 
-    reader.readAsText(files[0]);
+    viewer.openDiagram(evt.target.result).then(() => {
+      diagramLoaded = true;
+    });
+  };
+
+  const name = document.getElementById('filename')
+  if (files.length === 0) {
+    name.innerText = 'No file selected'
+  } else {
+    name.innerText = files[0].name
+  }
+
+  reader.readAsText(files[0]);
 }
 
