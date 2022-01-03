@@ -4,7 +4,7 @@ import BpmnViewer from 'bpmn-js/lib/NavigatedViewer';
 
 import fileDrop from 'file-drops';
 
-import exampleXML from '../resources/diagram.bpmn';
+import exampleXML from '../resources/example.bpmn';
 
 
 const url = new URL(window.location.href);
@@ -133,6 +133,5 @@ document.getElementById('file-upload').onchange = function (evt) {
     }
 
     reader.readAsText(files[0]);
-
-
 }
+
